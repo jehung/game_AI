@@ -8,53 +8,58 @@ from isolation import Board, game_as_text
 
 # Submission Class 1
 class OpenMoveEvalFn:
-
     def score(self, game, maximizing_player_turn=True):
         """Score the current game state
-        
+
         Evaluation function that outputs a score equal to how many 
         moves are open for AI player on the board minus the moves open 
         for opponent player.
-            
+
         Args
             param1 (Board): The board and game state.
             param2 (bool): True if maximizing player is active.
 
         Returns:
             int: The current state's score. Your agent's moves minus the opponent's moves.
-            
+
         """
-        # TODO: finish this function!
-        raise NotImplementedError
+        if maximizing_player_turn:
+            eval_fn = game.get_legal_moves().__len__()
+        else:
+            eval_fn = game.get_opponent_moves().__len__()
+        return eval_fn
+
 
 
 # Submission Class 2
 class CustomEvalFn:
-
     def __init__(self):
         pass
 
     def score(self, game, maximizing_player_turn=True):
         """Score the current game state
-        
+
         Custom evaluation function that acts however you think it should. This 
         is not required but highly encouraged if you want to build the best 
         AI possible.
-        
+
         Args
             game (Board): The board and game state.
             maximizing_player_turn (bool): True if maximizing player is active.
 
         Returns:
             bool: The current state's score, based on your own heuristic.
-            
+
         """
-        # TODO: finish this function!
-        raise NotImplementedError
+        if maximizing_player_turn:
+            eval_fn = game.get_legal_moves().__len__()
+        else:
+            eval_fn = game.get_opponent_moves().__len__()
+        return eval_fn
+
 
 
 class CustomPlayer:
-    # TODO: finish this class!
     """Player that chooses a move using 
     your evaluation function and 
     a depth-limited minimax algorithm 
@@ -66,10 +71,10 @@ class CustomPlayer:
 
     def __init__(self, search_depth=3, eval_fn=OpenMoveEvalFn()):
         """Initializes your player.
-        
+
         if you find yourself with a superior eval function, update the default 
         value of `eval_fn` to `CustomEvalFn()`
-        
+
         Args:
             search_depth (int): The depth to which your agent will search
             eval_fn (function): Utility function used by your agent
@@ -79,12 +84,12 @@ class CustomPlayer:
 
     def move(self, game, legal_moves, time_left):
         """Called to determine one move by your agent
-        
+
         Args:
             game (Board): The board and game state.
             legal_moves (dict): Dictionary of legal moves and their outcomes
             time_left (function): Used to determine time left before timeout
-            
+
         Returns:
             (tuple, int): best_move, best_queen
         """
@@ -96,10 +101,9 @@ class CustomPlayer:
         """Can be updated if desired"""
         return self.eval_fn.score(game)
 
-        
     def minimax(self, game, time_left, depth=float("inf"), maximizing_player=True):
         """Implementation of the minimax algorithm
-        
+
         Args:
             game (Board): A board and game state.
             time_left (function): Used to determine time left before timeout
@@ -109,27 +113,29 @@ class CustomPlayer:
         Returns:
             (tuple, int, int): best_move, best_queen, best_val
         """
-        # completed: May 20, 2017
+        ## TODO: consider changing queeen1 to something else
         moves = game.get_legal_moves_of_queen1()
         best_move = moves[moves.keys()[0]][0]
         best_score = float('-inf')
         best_queen = None
         best_val = None
         for move in moves:
-            #gamestate = game.forecast_move(move, game.get_active_player())
+            # gamestate = game.forecast_move(move, game.get_active_player())
             gamestate = game.forecast_move(move, self)
             score = self.minimax_maxvalue(gamestate, depth, time_left, maximizing_player)
             if score > best_score:
                 best_move = move
+                print('best_move', best_move)
                 best_score = score
+                print('best_score', best_score)
                 now_queen = game.get_active_player()
-                best_queen = now_queen==game.__active_player__
-                best_val = game.utility(gamestate)
-        print best_move, best_queen, best_val
+                best_queen = now_queen == game.__active_player__
+                best_val = self.utility(gamestate)
+                print('best_val', best_val)
         return best_move, best_queen, best_val
 
     def minimax_maxvalue(self, gamestate, depth, time_left, maximizing_player):
-        if depth == 0 or time_left < 500 or (not gamestate.get_legal_moves()):
+        if depth == 0 or time_left < 5 or (not gamestate.get_legal_moves()):
             return self.utility(gamestate)
 
         moves = gamestate.get_legal_moves_of_queen1()
@@ -142,7 +148,7 @@ class CustomPlayer:
         return best_score
 
     def minimax_minvalue(self, gamestate, depth, time_left, maximizing_player):
-        if depth == 0 or time_left < 500 or (not gamestate.get_legal_moves()):
+        if depth == 0 or time_left < 5 or (not gamestate.get_legal_moves()):
             return self.utility(gamestate)
 
         moves = gamestate.get_legal_moves_of_queen2()
@@ -157,7 +163,7 @@ class CustomPlayer:
     def alphabeta(self, game, time_left, depth=float("inf"), alpha=float("-inf"), beta=float("inf"),
                   maximizing_player=True):
         """Implementation of the alphabeta algorithm
-        
+
         Args:
             game (Board): A board and game state.
             time_left (function): Used to determine time left before timeout
@@ -170,5 +176,5 @@ class CustomPlayer:
             (tuple, int, int): best_move, best_queen, best_val
         """
         # TODO: finish this function!
-        raise 'YouAreNotHereYet'
-        return best_move, best_queen, val
+        raise NotImplementedError
+        #return best_move, best_queen, val
