@@ -114,8 +114,10 @@ class CustomPlayer:
             (tuple, int, int): best_move, best_queen, best_val
         """
         ## TODO: consider changing queeen1 to something else
-        moves = game.get_legal_moves_of_queen1()
-        best_move = moves[moves.keys()[0]][0]
+        ## TODO: use a function to get the name of the queen
+        moves = game.get_legal_moves().values()[0].keys()
+        print(moves)
+        best_move = None
         best_score = float('-inf')
         best_queen = None
         best_val = None
@@ -138,7 +140,7 @@ class CustomPlayer:
         if depth == 0 or time_left < 5 or (not gamestate.get_legal_moves()):
             return self.utility(gamestate)
 
-        moves = gamestate.get_legal_moves_of_queen1()
+        moves = gamestate.get_legal_moves().values()[0].keys()
         best_score = float('-inf')
         for move in moves:
             gamestate = gamestate.forecast_move(move, gamestate.get_active_player())
@@ -151,7 +153,7 @@ class CustomPlayer:
         if depth == 0 or time_left < 5 or (not gamestate.get_legal_moves()):
             return self.utility(gamestate)
 
-        moves = gamestate.get_legal_moves_of_queen2()
+        moves = gamestate.get_legal_moves().values()[0].keys()
         best_score = float('inf')
         for move in moves:
             gamestate = gamestate.forecast_move(move, gamestate.get_active_player())
