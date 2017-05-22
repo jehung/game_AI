@@ -51,6 +51,8 @@ class CustomEvalFn:
             bool: The current state's score, based on your own heuristic.
 
         """
+        # TODO: update for stochatic game
+        
         if maximizing_player_turn:
             eval_fn = game.get_legal_moves().__len__()
         else:
@@ -99,6 +101,7 @@ class CustomPlayer:
 
     def utility(self, game):
         """Can be updated if desired"""
+        # TODO: upate utility for stochastic game
         return self.eval_fn.score(game)
 
     def minimax(self, game, time_left, depth=float("inf"), maximizing_player=True):
@@ -113,10 +116,7 @@ class CustomPlayer:
         Returns:
             (tuple, int, int): best_move, best_queen, best_val
         """
-        ## TODO: consider changing queeen1 to something else
-        ## TODO: use a function to get the name of the queen
         moves = game.get_legal_moves().values()[0].keys()
-        print(moves)
         best_move = None
         best_score = float('-inf')
         best_queen = None
