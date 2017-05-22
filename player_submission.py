@@ -51,8 +51,7 @@ class CustomEvalFn:
             bool: The current state's score, based on your own heuristic.
 
         """
-        # TODO: update for stochatic game
-        
+        # TODO: update for stochastic game
         if maximizing_player_turn:
             eval_fn = game.get_legal_moves().__len__()
         else:
@@ -101,7 +100,7 @@ class CustomPlayer:
 
     def utility(self, game):
         """Can be updated if desired"""
-        # TODO: upate utility for stochastic game
+        # TODO: update utility for stochastic game
         return self.eval_fn.score(game)
 
     def minimax(self, game, time_left, depth=float("inf"), maximizing_player=True):
@@ -116,17 +115,20 @@ class CustomPlayer:
         Returns:
             (tuple, int, int): best_move, best_queen, best_val
         """
-        moves = game.get_legal_moves().values()[0].keys()
+        moves = game.get_legal_moves().values()[0]
+        #print(game.get_legal_moves().values()[0])
         best_move = None
         best_score = float('-inf')
         best_queen = None
         best_val = None
-        for move in moves:
+        for move_key, move_value in moves.items():
+            #print('move_key', move_key)
+            #print('move_value', move_value)
             # gamestate = game.forecast_move(move, game.get_active_player())
-            gamestate = game.forecast_move(move, self)
-            score = self.minimax_maxvalue(gamestate, depth, time_left, maximizing_player)
+            gamestate = game.forecast_move(move_key, self)
+            score = self.minimax_maxvalue(gamestate, depth, time_left, maximizing_player)*move_value[0][1]
             if score > best_score:
-                best_move = move
+                best_move = move_key
                 print('best_move', best_move)
                 best_score = score
                 print('best_score', best_score)
@@ -137,26 +139,26 @@ class CustomPlayer:
         return best_move, best_queen, best_val
 
     def minimax_maxvalue(self, gamestate, depth, time_left, maximizing_player):
-        if depth == 0 or time_left < 5 or (not gamestate.get_legal_moves()):
+        if depth == 0 or time_left < 5 or (not gamestate.get_legal_moves().values()[0]):
             return self.utility(gamestate)
 
-        moves = gamestate.get_legal_moves().values()[0].keys()
+        moves = gamestate.get_legal_moves().values()[0]
         best_score = float('-inf')
-        for move in moves:
-            gamestate = gamestate.forecast_move(move, gamestate.get_active_player())
-            score = self.minimax_minvalue(gamestate, depth-1, time_left, False)
+        for move_key, move_value in moves.items():
+            gamestate = gamestate.forecast_move(move_key, gamestate.get_active_player())
+            score = self.minimax_minvalue(gamestate, depth-1, time_left, False)*move_value[0][1]
             if score > best_score:
                 best_score = score
         return best_score
 
     def minimax_minvalue(self, gamestate, depth, time_left, maximizing_player):
-        if depth == 0 or time_left < 5 or (not gamestate.get_legal_moves()):
+        if depth == 0 or time_left < 5 or (not gamestate.get_legal_moves().values()[0]):
             return self.utility(gamestate)
 
-        moves = gamestate.get_legal_moves().values()[0].keys()
+        moves = gamestate.get_legal_moves().values()[0]
         best_score = float('inf')
-        for move in moves:
-            gamestate = gamestate.forecast_move(move, gamestate.get_active_player())
+        for move_key, move_value in moves.items():
+            gamestate = gamestate.forecast_move(move_key, gamestate.get_active_player())
             score = self.minimax_maxvalue(gamestate, depth-1, time_left, True)
             if score < best_score:
                 best_score = score
