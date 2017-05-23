@@ -122,11 +122,12 @@ class CustomPlayer:
         best_queen = None
         best_val = None
         for move_key, move_value in moves.items():
-            #print('move_key', move_key)
-            #print('move_value', move_value)
+            # 'move' is a tuple of tuples
+            print(move_key)
             # gamestate = game.forecast_move(move, game.get_active_player())
             gamestate = game.forecast_move(move_key, self)
-            score = self.minimax_maxvalue(gamestate, depth, time_left, maximizing_player)*move_value[0][1]
+            print(time_left())
+            score = self.minimax_maxvalue(gamestate, depth, time_left, maximizing_player)
             if score > best_score:
                 best_move = move_key
                 print('best_move', best_move)
@@ -139,7 +140,7 @@ class CustomPlayer:
         return best_move, best_queen, best_val
 
     def minimax_maxvalue(self, gamestate, depth, time_left, maximizing_player):
-        if depth == 0 or time_left < 5 or (not gamestate.get_legal_moves().values()[0]):
+        if depth == 0 or time_left() <= 500 or (not gamestate.get_legal_moves().values()[0]):
             return self.utility(gamestate)
 
         moves = gamestate.get_legal_moves().values()[0]
@@ -147,12 +148,13 @@ class CustomPlayer:
         for move_key, move_value in moves.items():
             gamestate = gamestate.forecast_move(move_key, gamestate.get_active_player())
             score = self.minimax_minvalue(gamestate, depth-1, time_left, False)*move_value[0][1]
+            #print(move_value[0][1])
             if score > best_score:
                 best_score = score
         return best_score
 
     def minimax_minvalue(self, gamestate, depth, time_left, maximizing_player):
-        if depth == 0 or time_left < 5 or (not gamestate.get_legal_moves().values()[0]):
+        if depth == 0 or time_left() <= 500  or (not gamestate.get_legal_moves().values()[0]):
             return self.utility(gamestate)
 
         moves = gamestate.get_legal_moves().values()[0]
